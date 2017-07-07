@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+<head>
+    <title>map</title>
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div style="margin-bottom:30px;">
+        hide polygon: 
+        <select id="select" onchange="onChange()">
+            <option value="0">select</option>
+            <option value="gachibowli">Gachibowli</option>
+            <option value="srikotla">Sri Kotla</option>
+            <option></option>
+        </select>
+    </div>
+    <div id="map"></div>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=weather&sensor=false"></script>
+    <script>
+        var map = null;
+        var polygonpolygon = [];
+
+        function initialize(val) {
+            if (val != 0 || val != undefined) {
+                var myOptions = {
+                    zoom: 15,
+                    center: new google.maps.LatLng(17.446172, 78.3401173),
+                    mapTypeControl: true,
+                    mapTypeControlOptions: {
+                        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+                    },
+                    navigationControl: true,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                }
+                map = new google.maps.Map(document.getElementById("map"),
+                myOptions);
+
+                var latlang = [
+                {
+                    "gachibowli": [
+                        {
+                            "lan": 17.450812,
+                            "lat": 78.345604
+                        }, {
+                            "lan": 17.448652,
+                            "lat": 78.348533
+                        }, {
+                            "lan": 17.442930,
+                            "lat": 78.343244
+                        }, {
+                            "lan": 17.444752,
+                            "lat": 78.341259
+                        }, {
+                            "lan": 17.443838,
+                            "lat": 78.340343
+                        }, {
+                            "lan": 17.445025,
+                            "lat": 78.339313
+                        }, {
+                            "lan": 17.447103,
+                            "lat": 78.341019
+                        }, {
+                            "lan": 17.446172,
+                            "lat": 78.342306
+                        }
+                    ],
+                    "center": [
+                        {
+                            "lan": 17.4466218,
+                            "lat": 78.3439911
+                        }
+                    ],
+                    "fillColor": "blue",
+                    "strokeWeight": 3
+
+                },
+                {
+                    "srikotla": [
+                        {
+                            "lan": 17.454405,
+                            "lat": 78.350318
+                        },
+                        {
+                            "lan": 17.459801,
+                            "lat": 78.355232
+                        },
+                        {
+                            "lan": 17.455399,
+                            "lat": 78.363788
+                        },
+                        {
+                            "lan": 17.453372,
+                            "lat": 78.363595
+                        },
+                        {
+                            "lan": 17.450561,
+                            "lat": 78.355064
+                        }
+                    ],
+                    "center": [
+                        {
+                            "lan": 17.455073,
+                            "lat": 78.357666
+                        }
+                    ],
+                    "fillColor": "red",
+                    "strokeWeight": 3
+                }
+                ]
+
+                for (i in latlang) {
+                    var polygonPoints = [];
+
+                    for (j in latlang[i][Object.keys(latlang[i])[0]]) {
+                        polygonPoints.push(new google.maps.LatLng(latlang[i][Object.keys(latlang[i])[0]][j].lan, latlang[i][Object.keys(latlang[i])[0]][j].lat));
+                    }
+
+                    var marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(latlang[i][Object.keys(latlang[i])[1]][0].lan, latlang[i][Object.keys(latlang[i])[1]][0].lat),
+                    });
+
+                    marker.setMap(map);
+                    //console.log(polygonPoints)
+                    var polygonOptions = {};
+                    polygonOptions.fillColor = latlang[i]["fillColor"];
+                    polygonOptions.strokeWeight = latlang[i]["strokeWeight"];
+
+                    var polygon = new google.maps.Polygon(polygonOptions);
+                    polygon.setPaths(polygonPoints);
+
+                    if (Object.keys(latlang[i])[0] == val) {
+                        polygon.setMap(null);
+                    } else {
+                        polygon.setMap(map);
+                    }
+
+                }
+                /*for (i = 0; i < latlang.length; i++) {
+                    var polygonPoints = [];
+                    console.log(latlang[i][Object.keys(latlang[i])[0]]);
+                    for (j = 0; j < latlang[i].paths.length; j++) {
+                        polygonPoints.push(new google.maps.LatLng(latlang[i].paths[j].lan, latlang[i].paths[j].lat));
+                    }
+    
+                    var marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(latlang[i].center[0].lan, latlang[i].center[0].lat),
+                    });
+    
+                    marker.setMap(map);
+    
+                    var polygonOptions = {};
+                    polygonOptions.fillColor = latlang[i].fillColor;
+                    polygonOptions.strokeWeight = latlang[i].strokeWeight;
+    
+                    var polygon = new google.maps.Polygon(polygonOptions);
+                    polygon.setPaths(polygonPoints);
+                    polygon.setMap(map);
+                }*/
+            }
+        }
+        function onChange() {
+            var val = document.getElementById("select").value
+            initialize(val);
+        }
+        initialize();
+    </script>
+
+</body>
+</html>
